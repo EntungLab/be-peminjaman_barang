@@ -1,7 +1,24 @@
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
+const bcrypt = require('bcrypt');
 const User = require('../models/User');
 const { validationResult } = require('express-validator');
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const user = await User.findOne({ where: { email } });
+
+    if (!user || user.password !== password) {
+      return res.status(401).json({ message: 'Email atau password salah' });
+    }
+
+    // Jika login berhasil, Anda bisa mengembalikan token atau data pengguna
+    res.status(200).json({ message: 'Login berhasil', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Terjadi kesalahan pada server', error });
+  }
+};
 
 exports.register = async (req, res) => {
   const errors = validationResult(req);
@@ -18,18 +35,3 @@ exports.register = async (req, res) => {
   }
 };
 
-exports.login = async (req, res) => {
-  try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ where: { username } });
-
-    if (!user || !(await bcrypt.compare(password, user.password))) {
-      return res.status(401).json({ message: 'Username atau password salah' });
-    }
-
-    const token = jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '1d' });
-    res.json({ message: 'Login berhasil', token });
-  } catch (error) {
-    res.status(400).json({ message: 'Login gagal', error: error.message });
-  }
-}; 

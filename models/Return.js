@@ -2,31 +2,42 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/database');
 
 const Return = sequelize.define('Return', {
-  id: {
-    type: DataTypes.INTEGER,
-    primaryKey: true,
-    autoIncrement: true,
-  },
-  loan_id: {
+  user_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  return_date: {
+  item_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  quantity_borrowed: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+  },
+  loan_date: {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  condition_status: {
-    type: DataTypes.STRING,
+  due_date: {
+    type: DataTypes.DATE,
     allowNull: false,
+  },
+  status: {
+    type: DataTypes.STRING,
   },
   admin_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+  },
+  approval_date: {
+    type: DataTypes.DATE,
   },
   notes: {
     type: DataTypes.TEXT,
-    allowNull: true,
   },
+}, {
+  timestamps: true,
+  createdAt: 'created_at',
+  updatedAt: 'updated_at',
 });
 
 module.exports = Return; 
